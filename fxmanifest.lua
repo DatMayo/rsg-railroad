@@ -45,6 +45,7 @@ files {
     'html/index.html',
     'html/style.css',
     'html/script.js',
+    'locales/*.json',
 }
 
 dependencies {

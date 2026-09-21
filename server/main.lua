@@ -115,7 +115,7 @@ RegisterNetEvent('rsg-railroad:buyTrain', function(trainIndex, stationId)
     local startWater = math.floor(trainConfig.maxWater * 0.5)
     local startCondition = math.floor(trainConfig.maxCondition * 0.5)
     DB.InsertTrain(citizenid, trainConfig.company, trainConfig.model, trainConfig.label, startFuel, startWater, startCondition)
-    TriggerClientEvent('ox_lib:notify', src, { title = locale('notify_title'), description = locale('train_bought') .. ' (50% fuel, water & condition)', type = 'success', duration = 7000 })
+    TriggerClientEvent('ox_lib:notify', src, { title = locale('notify_title'), description = locale('train_bought_half', locale('train_bought')), type = 'success', duration = 7000 })
 
     Webhook.SendFields('economy', 'Train Purchased', {
         { 'Player', GetPlayerFullName(Player) .. ' (' .. citizenid .. ')' },

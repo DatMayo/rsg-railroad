@@ -31,14 +31,10 @@ function Notify(msg, nType, duration)
     })
 end
 
-function NotifyServer(src, msg, nType, duration)
-    TriggerClientEvent('ox_lib:notify', src, {
-        title = locale('notify_title'),
-        description = msg,
-        type = nType or 'inform',
-        duration = duration or 5000,
-    })
-end
+-- NOTE: server-side notifications must use TriggerClientEvent('ox_lib:notify', ...)
+-- from a server file so locale() resolves on the server. Do NOT call
+-- TriggerClientEvent from the client (it silently does nothing, which looks
+-- like "notifications not working").
 
 ---------------------------------------------------------------
 -- MODEL LOADING

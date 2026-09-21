@@ -91,10 +91,10 @@ function BeginDeliveryLeg(dest)
     if missionBlip then RemoveBlip(missionBlip) end
     missionBlip = CreateMissionBlip(dest.coords, dest.label, dest.radius or 25.0, 0xFF0000FF)
 
-    local legTag = activeMission.totalLegs > 1 and (' (Job ' .. activeMission.leg .. '/' .. activeMission.totalLegs .. ')') or ''
+    local legTag = activeMission.totalLegs > 1 and locale('mission_leg_tag', activeMission.leg, activeMission.totalLegs) or ''
     Notify(locale('mission_cargo', cargo.label), 'inform', 7000)
     Wait(500)
-    Notify(locale('mission_go_to', dest.label) .. legTag .. ' - Follow the blip on your map!', 'success', 10000)
+    Notify(locale('mission_go_to', dest.label) .. legTag .. locale('mission_follow_blip'), 'success', 10000)
 
     local myLeg = activeMission.leg
     CreateThread(function()
