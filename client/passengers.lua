@@ -160,7 +160,7 @@ local function HandleStationArrival(station)
     end
 
     if #boardedPassengers > 0 then
-        Notify(#boardedPassengers .. ' passenger(s) remaining on board.', 'inform', 4000)
+        Notify(locale('passengers_remaining', #boardedPassengers), 'inform', 4000)
     end
 end
 
