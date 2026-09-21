@@ -406,7 +406,7 @@ Config.TrackSwitches = {
 Config.TrainSetup = {
     {
         trainname = 'Orient Express',
-        trainid = 'train1',
+        trainid = 'train4',
         trainhash = -2006657222,
         startcoords = vector3(-154.65, 639.79, 113.52),
         route = 'trainRouteOne',
