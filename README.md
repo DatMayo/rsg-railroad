@@ -151,19 +151,6 @@ All settings are in `config.lua`:
 
 ---
 
-## Escrow Notice
-
-This resource uses FiveM/RedM asset escrow. The following files are protected:
-- `client/*.lua` — All client scripts
-- `server/*.lua` — All server scripts
-
-The following files are open/editable:
-- `shared/config.lua` — Full configuration
-- `locales/*.json` — Translations (ox_lib locale files)
-- `html/*` — UI files
-- `install/*` — Database and items
-- `fxmanifest.lua` — Resource manifest
-
 ## Languages
 
 This resource uses ox_lib's locale system. Translations are provided for:
@@ -191,23 +178,6 @@ If the selected language's file is missing, or a key hasn't been translated, the
 
 ---
 
-## Changelog
-
-### 2.1.0
-- Missions UI simplified to two one-click buttons: "Start a Delivery Job" and "Start a Maintenance Job" (no more picking a destination from a list)
-- Missions now run as a job chain of multiple stops (`jobLegs` in `config.lua`, default 3) — the script automatically picks the closest unvisited stop for each leg
-- Train HUD mission tracker now shows current leg progress (e.g. "Delivery (2/3)")
-- Pay/XP is still awarded after each completed stop in the chain
-
-### 2.0.0
-- Initial v2 release: company ownership, employee system, upgrades, supply store, and progression system
-
----
-
 ## Support
 
-For support, please contact mack-scripts.
-
----
-
-© mack-scripts 2026. All rights reserved.
+RSG Discord
