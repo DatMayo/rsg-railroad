@@ -16,12 +16,27 @@ RegisterNetEvent('rsg-railroad:robberyOccurred', function(companyId)
     local src = source
     if not companyId or not Config.Companies[companyId] then return end
 
+    local Player = RSGCore.Functions.GetPlayer(src)
+    if not Player then return end
+
     local now = GetGameTimer()
     if lastRobberyAt[src] and (now - lastRobberyAt[src]) < ROBBERY_COOLDOWN_MS then return end
     lastRobberyAt[src] = now
 
     local ownership = DB.GetCompanyOwnership(companyId)
     if not ownership then return end
+
+    -- Only someone who could plausibly be driving one of this company's
+    -- trains (its owner or an approved driver) can trigger a robbery
+    -- payout for it. Without this, any player could fire this event for
+    -- an arbitrary companyId to repeatedly drain a company they have no
+    -- relation to, purely for griefing.
+    local citizenid = Player.PlayerData.citizenid
+    local isOwner = ownership.owner_citizenid == citizenid
+    if not isOwner then
+        local employee = DB.GetEmployeeByIds(companyId, citizenid)
+        if not employee or employee.status ~= 'approved' then return end
+    end
 
     local cfg = Config.TrainRobbery or {}
     local balance = tonumber(ownership.cash_register) or 0
