@@ -19,7 +19,19 @@ function nuiFetch(endpoint, data) {
 }
 
 // ========== DOM HELPERS ==========
-function el(tag, cls, html) {
+// Safe by default: `text` is always rendered as plain text (never parsed as
+// markup), so server/player-controlled strings (company names, driver
+// names, etc.) can never inject HTML/script into the NUI. Use elHTML()
+// instead, and only for developer-authored locale strings that
+// intentionally carry literal markup (e.g. "<b>...</b>").
+function el(tag, cls, text) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+}
+
+function elHTML(tag, cls, html) {
     const e = document.createElement(tag);
     if (cls) e.className = cls;
     if (html !== undefined) e.innerHTML = html;
@@ -399,8 +411,8 @@ function renderMissions(content, details) {
         onClick: () => {
             details.innerHTML = '';
             details.appendChild(el('h3', undefined, t('nui_cargo_delivery_job', 'Cargo Delivery Job')));
-            details.appendChild(el('p', undefined, t('nui_dispatch_prefix', 'The train dispatcher will send you to the <b>') + deliveryLegs + t('nui_dispatch_suffix', '</b> closest delivery stops, one after another.')));
-            details.appendChild(el('p', undefined, t('nui_basepay_prefix', 'Base pay: <span class="stat-value gold">$') + (deliveryCfg.basePay || 15) + t('nui_basepay_suffix', '</span> + destination bonus, per stop.')));
+            details.appendChild(elHTML('p', undefined, t('nui_dispatch_prefix', 'The train dispatcher will send you to the <b>') + deliveryLegs + t('nui_dispatch_suffix', '</b> closest delivery stops, one after another.')));
+            details.appendChild(elHTML('p', undefined, t('nui_basepay_prefix', 'Base pay: <span class="stat-value gold">$') + (deliveryCfg.basePay || 15) + t('nui_basepay_suffix', '</span> + destination bonus, per stop.')));
             details.appendChild(el('p', 'hint', t('nui_pay_split', 'Pay split: 50% to you, 50% to company.')));
             details.appendChild(woodBtn(t('nui_start_delivery_job', 'Start a Delivery Job'), () => nuiFetch('startMission', { missionType: 'delivery' })));
         },
@@ -417,7 +429,7 @@ function renderMissions(content, details) {
         onClick: () => {
             details.innerHTML = '';
             details.appendChild(el('h3', undefined, t('nui_rail_maintenance_job', 'Rail Maintenance Job')));
-            details.appendChild(el('p', undefined, t('nui_traveltotheprefix', 'Travel to the <b>') + maintenanceLegs + t('nui_traveltothesuffix', '</b> closest damaged track sections, one after another, and repair each one.')));
+            details.appendChild(elHTML('p', undefined, t('nui_traveltotheprefix', 'Travel to the <b>') + maintenanceLegs + t('nui_traveltothesuffix', '</b> closest damaged track sections, one after another, and repair each one.')));
             details.appendChild(el('p', 'hint', t('nui_pay_split', 'Pay split: 50% to you, 50% to company.')));
             details.appendChild(woodBtn(t('nui_start_maintenance_job', 'Start a Maintenance Job'), () => nuiFetch('startMission', { missionType: 'maintenance' })));
         },
