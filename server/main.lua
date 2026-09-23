@@ -229,12 +229,27 @@ RegisterNetEvent('rsg-railroad:setTrainSpawned', function(spawned, trainId)
     if spawned then
         local Player = RSGCore.Functions.GetPlayer(src)
         if not Player then return end
-        local train = DB.GetTrainById(trainId)
-        if not train or train.citizenid ~= Player.PlayerData.citizenid then return end
+
+        -- trainId is 0 for V2 company/config trains (no DB row -- see
+        -- SpawnConfigTrain in client/train_spawn.lua). Only legacy
+        -- personally-owned trains (trainId > 0) need DB ownership
+        -- verification here.
+        trainId = tonumber(trainId) or 0
+        if trainId > 0 then
+            local train = DB.GetTrainById(trainId)
+            if not train or train.citizenid ~= Player.PlayerData.citizenid then return end
+        end
+
+        -- Previously this bailed out above for trainId == 0 (no matching
+        -- DB row), so ActiveTrains[src] was never set for company trains
+        -- and canSpawnTrain() always reported false positives, letting a
+        -- player spawn more than one company train at once server-side.
         if ActiveTrains[src] then return end -- already has a train out
 
         ActiveTrains[src] = trainId
-        DB.UnparkTrain(trainId)
+        if trainId > 0 then
+            DB.UnparkTrain(trainId)
+        end
     else
         ActiveTrains[src] = nil
     end
