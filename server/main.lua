@@ -171,6 +171,19 @@ RegisterNetEvent('rsg-railroad:ticketRevenue', function(companyId, passengerCoun
     local Player = RSGCore.Functions.GetPlayer(src)
     if not Player or not companyId or not Config.Companies[companyId] then return end
 
+    -- Only the company owner or an approved driver can be driving one of
+    -- this company's trains, so only they can legitimately earn ticket
+    -- revenue for it. Without this, any player could fire this event for
+    -- an arbitrary companyId (they have no relation to) to farm free
+    -- cash/XP for themselves every few seconds.
+    local citizenid = Player.PlayerData.citizenid
+    local ownership = DB.GetCompanyOwnership(companyId)
+    local isOwner = ownership and ownership.owner_citizenid == citizenid
+    if not isOwner then
+        local employee = DB.GetEmployeeByIds(companyId, citizenid)
+        if not employee or employee.status ~= 'approved' then return end
+    end
+
     passengerCount = tonumber(passengerCount) or 0
     if passengerCount <= 0 then return end
 
@@ -192,12 +205,11 @@ RegisterNetEvent('rsg-railroad:ticketRevenue', function(companyId, passengerCoun
     Player.Functions.AddMoney('cash', driverShare)
 
     -- Pay into company register
-    if DB.GetCompanyOwnership(companyId) then
+    if ownership then
         DB.AddToCashRegister(companyId, compShare)
     end
 
     -- Award XP
-    local citizenid = Player.PlayerData.citizenid
     local xpGain = passengerCount * cfg.TicketXP
     DB.AddCompanyXP(citizenid, companyId, xpGain)
 
